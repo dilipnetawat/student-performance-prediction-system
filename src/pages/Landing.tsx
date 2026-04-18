@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  ArrowRight, BarChart3, Brain, Bell, Sparkles, GraduationCap, Shield, Zap, TrendingUp, Users, Activity, Star,
+  ArrowRight, BarChart3, Brain, Bell, Sparkles, GraduationCap, Shield, Zap, TrendingUp, Users, Activity,
 } from 'lucide-react';
 import { Hero3D } from '../components/Hero3D';
 import { Button } from '../components/ui/Button';
@@ -13,13 +13,6 @@ const FEATURES = [
   { icon: Sparkles, title: 'Smart Insights', desc: 'AI-powered recommendations tailored for every weak area.' },
   { icon: Shield, title: 'Role-Based Access', desc: 'Granular permissions for admins, teachers, and students.' },
   { icon: Zap, title: 'Lightning Fast', desc: 'Run predictions across your whole roster in milliseconds.' },
-];
-
-const STATS = [
-  { value: '10k+', label: 'Students Tracked' },
-  { value: '94%', label: 'Prediction Accuracy' },
-  { value: '500+', label: 'Schools' },
-  { value: '24/7', label: 'Live Monitoring' },
 ];
 
 export function Landing() {
@@ -37,8 +30,6 @@ export function Landing() {
           <div className="hidden md:flex items-center gap-8 text-sm text-gray-500">
             <a href="#features" className="hover:text-gray-900 transition">Features</a>
             <a href="#how" className="hover:text-gray-900 transition">How it Works</a>
-            <a href="#feedback" className="hover:text-gray-900 transition">Feedback</a>
-            <a href="#stats" className="hover:text-gray-900 transition">Stats</a>
           </div>
           <div className="flex items-center gap-3">
             <Link to="/login">
@@ -119,27 +110,8 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section id="stats" className="py-12 border-y border-gray-100 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {STATS.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="text-center"
-            >
-              <p className="text-4xl lg:text-5xl font-bold text-blue-600">{s.value}</p>
-              <p className="text-xs uppercase tracking-wider text-gray-400 mt-2">{s.label}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
       {/* Features */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20 border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-3">Features</p>
@@ -212,71 +184,8 @@ export function Landing() {
         </div>
       </section>
 
-      {/* Feedback / Testimonials */}
-      <section id="feedback" className="py-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-3">Feedback</p>
-            <h2 className="text-3xl lg:text-4xl font-bold">
-              What educators are <span className="text-blue-600">saying</span>
-            </h2>
-            <p className="mt-4 text-gray-500">
-              Hear from teachers and administrators who use TrackEd every day.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Dr. Priya Sharma',
-                role: 'Principal, Delhi Public School',
-                text: 'TrackEd has completely changed how we handle student interventions. We can now predict which students need help 3 weeks before exams — that\'s a game changer.',
-                rating: 5,
-              },
-              {
-                name: 'Rahul Mehta',
-                role: 'Math Teacher, Gwalior',
-                text: 'The recommendations are surprisingly accurate. I used to manually track 120 students — now TrackEd gives me a clear priority list every Monday morning.',
-                rating: 5,
-              },
-              {
-                name: 'Sneha Patel',
-                role: 'Academic Coordinator',
-                text: 'Our dropout rate dropped by 30% in just one semester. The early warning system catches problems that we would have missed until it was too late.',
-                rating: 5,
-              },
-            ].map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow"
-              >
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} size={16} className="text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-6">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
-                    {t.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{t.name}</p>
-                    <p className="text-xs text-gray-400">{t.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 border-t border-gray-100">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
