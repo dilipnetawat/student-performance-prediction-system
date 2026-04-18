@@ -3,6 +3,7 @@ import { StoreProvider, useStore } from './lib/store';
 import { Landing } from './pages/Landing';
 import { AuthPage } from './pages/Auth';
 import { StudentAuthPage } from './pages/StudentAuth';
+import { LegalPage } from './pages/Legal';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { StudentsPage } from './pages/Students';
@@ -26,6 +27,8 @@ export default function App() {
           <Route path="/login" element={<AuthPage mode="login" />} />
           <Route path="/signup" element={<AuthPage mode="signup" />} />
           <Route path="/student-signup" element={<StudentAuthPage />} />
+          <Route path="/privacy" element={<LegalPage type="privacy" />} />
+          <Route path="/terms" element={<LegalPage type="terms" />} />
           <Route
             path="/app"
             element={

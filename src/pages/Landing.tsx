@@ -217,8 +217,8 @@ export function Landing() {
             <span>© 2026 TrackEd. Empowering educators with intelligence.</span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-gray-900 transition">Privacy</a>
-            <a href="#" className="hover:text-gray-900 transition">Terms</a>
+            <Link to="/privacy" className="hover:text-gray-900 transition">Privacy</Link>
+            <Link to="/terms" className="hover:text-gray-900 transition">Terms</Link>
             <a href="#" className="hover:text-gray-900 transition">GitHub</a>
           </div>
         </div>

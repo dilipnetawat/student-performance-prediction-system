@@ -2,6 +2,9 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { User, Student, Prediction, Notification, Role } from './types';
 import { buildSeedStudents, buildSeedNotifications } from './seedData';
 import { runPrediction } from './mlEngine';
+import { auth, db } from './firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const KEY = 'tracked_state_v1';
 
@@ -74,11 +77,67 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle('dark', state.theme === 'dark');
   }, [state.theme]);
 
+  // Auth Observer
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Fetch or create user in Firestore
+        const userRef = doc(db, 'users', firebaseUser.uid);
+        let userDoc;
+        try {
+          userDoc = await getDoc(userRef);
+        } catch (err) {
+          console.error("Firestore error:", err);
+          return;
+        }
+
+        let userData: User;
+        let isNewSession = false;
+
+        if (!userDoc.exists()) {
+          // Explicitly clear local caches as requested for a new user
+          localStorage.clear();
+          sessionStorage.clear();
+          isNewSession = true;
+
+          userData = {
+             id: firebaseUser.uid,
+             name: firebaseUser.displayName || 'New User',
+             email: firebaseUser.email || '',
+             role: 'teacher',
+             avatar: firebaseUser.photoURL || avatarFor(firebaseUser.displayName || 'New User'),
+             createdAt: new Date().toISOString(),
+          };
+          try {
+            await setDoc(userRef, userData);
+          } catch(e) { console.error(e) }
+        } else {
+          userData = userDoc.data() as User;
+        }
+
+        setState(s => {
+          if (s.user?.id !== firebaseUser.uid || isNewSession) {
+             // Reset everything for this new user to prevent leaking data
+             localStorage.clear();
+             return { user: userData, students: [], predictions: [], notifications: [], theme: s.theme };
+          }
+          return { ...s, user: userData };
+        });
+      } else {
+        // Logged out
+        localStorage.clear();
+        sessionStorage.clear();
+        setState({ user: null, students: [], predictions: [], notifications: [], theme: 'light' });
+      }
+    });
+
+    return () => unsub();
+  }, []);
+
   const value: Ctx = useMemo(() => ({
     ...state,
     login: (email, password) => {
       if (!email || !password) return { ok: false, error: 'Email and password required' };
-      // demo: accept any credential
       const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
       const user: User = {
         id: 'u_' + Math.random().toString(36).slice(2, 10),
@@ -103,17 +162,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       return { ok: true };
     },
     googleSignup: (name, email, _token) => {
-      const user: User = {
-        id: 'u_' + Math.random().toString(36).slice(2, 10),
-        name,
-        email,
-        role: 'student',
-        avatar: avatarFor(name),
-        createdAt: new Date().toISOString(),
-      };
-      setState(s => ({ ...s, user }));
+      // Stub, logic handled in auth observer now
     },
-    logout: () => setState(s => ({ ...s, user: null })),
+    logout: () => {
+      signOut(auth).catch(console.error);
+      setState(s => ({ ...s, user: null }));
+    },
     addStudent: (data) => setState(s => {
       const id = 'std_' + Math.random().toString(36).slice(2, 8);
       const base: Student = {
